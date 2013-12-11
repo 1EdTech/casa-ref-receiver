@@ -13,6 +13,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'rest-client'
   s.add_dependency 'thor'
   s.add_dependency 'casa-payload'
+  s.add_dependency 'casa-operation-translate'
 
   s.add_development_dependency 'rake'
 

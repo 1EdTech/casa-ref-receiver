@@ -1,10 +1,14 @@
-require 'casa-receiver/receive_in'
+require 'casa-receiver'
 
 class Receiver < Thor
 
   desc 'get_payloads', 'Query a host for payloads'
 
   def get_payloads
+
+    adj_in_translate_strategy = CASA::Receiver::AdjInTranslate::Strategy.new({
+       '1f2625c2-615f-11e3-bf13-d231feb1dc81' => 'title'
+    })
 
     client = CASA::Receiver::ReceiveIn::Client.new
 
@@ -14,9 +18,14 @@ class Receiver < Thor
     secret = ask('Secret (optional - blank to skip):').strip
     client.use_secret secret unless secret.length == 0
 
+    say ''
     begin
       payloads = CASA::Receiver::ReceiveIn::PayloadFactory.from_response client.get_payloads
-      payloads.each { |payload| say payload.to_json, :green }
+      payloads.each do |payload|
+        say payload.to_json, :cyan
+        say adj_in_translate_strategy.execute(payload.to_hash), :green
+        say ''
+      end
     rescue CASA::Receiver::ReceiveIn::BodyStructureError
       say 'Server responded with body that is not a JSON array', :red
     rescue CASA::Receiver::ReceiveIn::BodyParserError
@@ -28,6 +37,7 @@ class Receiver < Thor
     end
 
     if yes? "Run another query ('y' to continue)?", :magenta
+      say ''
       get_payloads
     end
 
