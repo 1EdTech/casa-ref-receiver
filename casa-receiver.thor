@@ -10,11 +10,13 @@ class Receiver < Thor
   def get_payloads
 
     attributes = [
-        { :name => 'title', :class => 'CASA::Attribute::Title', :path => 'casa-attribute/title' }
+        { 'name' => 'title', 'class' => 'CASA::Attribute::Title', 'path' => 'casa-attribute/title', 'options' => {} }
     ]
 
     begin
       attributes.each { |attribute| CASA::Attribute::Loader.load! attribute }
+    rescue CASA::Attribute::LoaderAttributeError
+      abort "\e[31m\e[1mAll attributes must define name and class\e[0m\n\e[31mPlease resolve issues in attribute configuration"
     rescue CASA::Attribute::LoaderFileError => e
       abort "\e[31m\e[1mAttribute class '#{e.class_name}' requires the load path `#{e.require_path}`\e[0m\n\e[31mPlease add a gem to `Gemfile` that defines this load path"
     rescue CASA::Attribute::LoaderClassError => e
@@ -22,8 +24,8 @@ class Receiver < Thor
     end
 
     adj_in_translate_strategy = CASA::Receiver::AdjInTranslate::Strategy.new
-    CASA::Attribute::Loader.loaded.each do |attribute_name, class_object|
-      adj_in_translate_strategy.map class_object.uuid => attribute_name
+    CASA::Attribute::Loader.loaded.each do |attribute_name, attribute|
+      adj_in_translate_strategy.map attribute.uuid => attribute_name
     end
 
     client = CASA::Receiver::ReceiveIn::Client.new
@@ -39,8 +41,19 @@ class Receiver < Thor
       payloads = CASA::Receiver::ReceiveIn::PayloadFactory.from_response client.get_payloads
       payloads.each do |payload|
         say payload.to_json, :cyan
-        say adj_in_translate_strategy.execute(payload.to_hash), :green
-        say ''
+        payload_hash = adj_in_translate_strategy.execute(payload)
+        payload_hash['attributes'] = {
+          'originator_id' => payload_hash['identity']['originator_id'],
+          'timestamp' => 'TIMESTAMP',
+          'share' => payload_hash['original']['share'],
+          'propagate' => payload_hash['original']['propagate'],
+          'use' => {},
+          'require' => {}
+        }
+        CASA::Attribute::Loader.loaded.each do |attribute_name, attribute|
+          payload_hash['attributes'][attribute.section][attribute_name] = attribute.squash payload_hash
+        end
+        say payload_hash, :green
       end
     rescue CASA::Receiver::ReceiveIn::BodyStructureError
       say 'Server responded with body that is not a JSON array', :red

@@ -5,7 +5,9 @@ module CASA
     module AdjInTranslate
       class Strategy < CASA::Operation::Translate::Strategy
 
-        def execute payload_hash
+        def execute payload
+
+          payload_hash = payload.to_hash
 
           ['use','require'].each do |type|
 
