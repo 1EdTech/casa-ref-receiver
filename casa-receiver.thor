@@ -2,18 +2,20 @@ require 'casa-receiver'
 require 'casa-attribute/loader'
 require 'casa-attribute/loader_file_error'
 require 'casa-attribute/loader_class_error'
+require 'optparse'
 
-class Receiver < Thor
+class Casa < Thor
 
-  desc 'get_payloads', 'Query a host for payloads'
+  desc 'receive SERVER_URL', 'Query an adjacent CASA engine for payloads'
 
-  def get_payloads
+  method_option :secret, :aliases => '-s', :desc => 'Secret to send with GET /payloads request'
 
-    prepare_client!
+  def receive server_url
 
-    prepare_attributes!
+    prepare_client! server_url, options
 
-    say ''
+    prepare_attributes! options
+
     begin
       payloads = CASA::Receiver::ReceiveIn::PayloadFactory.from_response @client.get_payloads
       payloads.each do |payload|
@@ -31,16 +33,18 @@ class Receiver < Thor
       say "Server responded with error #{e.http_code}", :red
     end
 
-    if yes? "Run another query ('y' to continue)?", :magenta
-      say ''
-      get_payloads
-    end
-
   end
 
   private
 
-  def prepare_attributes!
+  def prepare_client! server_url, options
+
+    @client = CASA::Receiver::ReceiveIn::Client.new server_url
+    @client.use_secret options['secret'] if options.has_key? 'secret'
+
+  end
+
+  def prepare_attributes! options
 
     attributes = [
         { 'name' => 'title', 'class' => 'CASA::Attribute::Title', 'path' => 'casa-attribute/title', 'options' => {} }
@@ -57,18 +61,6 @@ class Receiver < Thor
     end
 
     @attributes = CASA::Attribute::Loader.loaded
-
-  end
-
-  def prepare_client!
-
-    @client = CASA::Receiver::ReceiveIn::Client.new
-
-    server_url = ask('Server URL (required):').strip
-    @client.use_server_url server_url unless server_url.length == 0
-
-    secret = ask('Secret (optional - blank to skip):').strip
-    @client.use_secret secret unless secret.length == 0
 
   end
 
@@ -105,7 +97,7 @@ class Receiver < Thor
   end
 
   def squash_payload_attributes payload_hash
-    
+
     squash_payload_attributes_base payload_hash
 
     @attributes.each do |attribute_name, attribute|

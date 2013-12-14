@@ -17,7 +17,13 @@ This module is intended to be run as part of the [CASA Engine reference implemen
 To query a manually via the command line:
 
 ```
-thor receiver:get_payloads
+thor casa:receive SERVER_URL
+```
+
+For a full description of `casa:receiver` functionality, see:
+
+```
+thor help casa:receive
 ```
 
 This will request a URL for the server and an optional secret, then issuing a query and returning the result/error; it will then the user whether to issue another query or not.
