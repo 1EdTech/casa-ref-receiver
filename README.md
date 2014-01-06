@@ -17,13 +17,25 @@ This module is intended to be run as part of the [CASA Engine reference implemen
 To query a manually via the command line:
 
 ```
-thor casa:receive SERVER_URL
+bundle exec bin/receiver query SERVER_URL
 ```
 
-For a full description of `casa:receiver` functionality, see:
+For example, if a publisher resides at `http://example.com` (publishing payloads under `http://example.com/payloads`), then the query would be executed as:
 
 ```
-thor help casa:receive
+bundle exec bin/receiver query http://example.com
+```
+
+If the publisher enforces a `secret`, this may be specified with the `--secret` option:
+
+```
+bundle exec bin/receiver query http://example.com --secret=qwerty123
+```
+
+For a full description of the query operation, see:
+
+```
+bundle exec bin/receiver help
 ```
 
 This will request a URL for the server and an optional secret, then issuing a query and returning the result/error; it will then the user whether to issue another query or not.
