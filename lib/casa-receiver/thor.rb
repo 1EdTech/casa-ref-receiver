@@ -1,5 +1,6 @@
 require 'thor'
 require 'yaml'
+require 'json'
 require 'pathname'
 require 'casa-attribute/loader_attribute_error'
 require 'casa-attribute/loader_class_error'
@@ -21,13 +22,23 @@ module CASA
 
       desc 'get SERVER_URL', 'Issue a query against a CASA Publisher'
 
-      method_option :secret, :type => 'string', :aliases => '-s', :desc => 'Secret to send with GET /payloads request'
+      method_option :secret,
+                    :aliases => '-s',
+                    :type => :string,
+                    :desc => 'Secret to send with GET /payloads request'
+
+      method_option :output,
+                    :aliases => '-o',
+                    :type => :string,
+                    :enum => ['json','yaml','none'],
+                    :default => 'json',
+                    :desc => 'Output format'
 
       def get server_url
 
         begin
           strategy = CASA::Receiver::Client::Strategy.new server_url, strategy_options
-          puts strategy.processed_payloads.to_json
+          say_output strategy.processed_payloads
         rescue CASA::Attribute::LoaderAttributeError
           say_fail "All attributes must define name and class\nPlease resolve issues in attribute configuration"
         rescue CASA::Attribute::LoaderFileError => e
@@ -39,7 +50,7 @@ module CASA
         rescue CASA::Receiver::ReceiveIn::BodyParserError
           say_fail 'Server responded with body that does not parse as JSON'
         rescue CASA::Receiver::ReceiveIn::RequestError => e
-          say_fail e.message, :red
+          say_fail e.message
         rescue CASA::Receiver::ReceiveIn::ResponseError => e
           say_fail "Server responded with error #{e.http_code}"
         end
@@ -48,8 +59,17 @@ module CASA
 
       no_commands do
 
+        def say_output payloads
+          case options['output']
+            when 'json'
+              say payloads.to_json
+            when 'yaml'
+              say payloads.to_yaml
+          end
+        end
+
         def say_fail message
-          say message, :red
+          say message, :red unless options['output'] == 'none'
           exit 1
         end
 

@@ -26,16 +26,8 @@ For example, if a publisher resides at `http://example.com` (publishing payloads
 bundle exec bin/receiver get http://example.com
 ```
 
-If the publisher enforces a `secret`, this may be specified with the `--secret` option:
-
-```
-bundle exec bin/receiver get http://example.com --secret=qwerty123
-```
-
-For a full description of the get operation, see:
+This operation supports the options `secret` for client secret and `output` for format of output. For a full description of these options and their allowed values, see:
 
 ```
 bundle exec bin/receiver help get
 ```
-
-This will request a URL for the server and an optional secret, then issuing a query and returning the result/error; it will then the user whether to issue another query or not.
