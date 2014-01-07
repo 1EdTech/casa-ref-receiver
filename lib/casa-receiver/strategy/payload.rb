@@ -1,13 +1,13 @@
 require 'casa-attribute/loader'
-require 'casa-receiver/adj_in_translate/strategy'
-require 'casa-receiver/adj_in_squash/strategy'
-require 'casa-receiver/adj_in_filter/strategy'
-require 'casa-receiver/adj_in_transform/strategy'
+require 'casa-receiver/strategy/adj_in_translate'
+require 'casa-receiver/strategy/adj_in_squash'
+require 'casa-receiver/strategy/adj_in_filter'
+require 'casa-receiver/strategy/adj_in_transform'
 
 module CASA
   module Receiver
-    module Payload
-      class Strategy
+    module Strategy
+      class Payload
 
         attr_reader :attributes
         attr_reader :adj_in_translate_strategy
@@ -19,10 +19,10 @@ module CASA
 
           @options = options
           @attributes = load_attributes! @options['attributes']
-          @adj_in_translate_strategy = CASA::Receiver::AdjInTranslate::Strategy.factory @attributes
-          @adj_in_squash_strategy = CASA::Receiver::AdjInSquash::Strategy.factory @attributes
-          @adj_in_filter_strategy = CASA::Receiver::AdjInFilter::Strategy.factory @attributes
-          @adj_in_transform_strategy = CASA::Receiver::AdjInTransform::Strategy.factory @attributes
+          @adj_in_translate_strategy = CASA::Receiver::Strategy::AdjInTranslate.factory @attributes
+          @adj_in_squash_strategy = CASA::Receiver::Strategy::AdjInSquash.factory @attributes
+          @adj_in_filter_strategy = CASA::Receiver::Strategy::AdjInFilter.factory @attributes
+          @adj_in_transform_strategy = CASA::Receiver::Strategy::AdjInTransform.factory @attributes
 
         end
 

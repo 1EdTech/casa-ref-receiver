@@ -1,10 +1,10 @@
 module CASA
   module Receiver
-    module AdjInSquash
-      class Strategy
+    module Strategy
+      class AdjInSquash
 
         def self.factory attributes
-          CASA::Receiver::AdjInSquash::Strategy.new attributes
+          CASA::Receiver::Strategy::AdjInSquash.new attributes
         end
 
         attr_reader :attributes

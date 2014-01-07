@@ -2,12 +2,12 @@ require 'casa-operation/translate'
 
 module CASA
   module Receiver
-    module AdjInTranslate
-      class Strategy < CASA::Operation::Translate::Strategy
+    module Strategy
+      class AdjInTranslate < CASA::Operation::Translate::Strategy
 
         def self.factory attributes
 
-          adj_in_translate_strategy = CASA::Receiver::AdjInTranslate::Strategy.new
+          adj_in_translate_strategy = CASA::Receiver::Strategy::AdjInTranslate.new
           attributes.each do |attribute_name, attribute|
             adj_in_translate_strategy.map attribute.uuid => attribute_name
           end

@@ -1,10 +1,10 @@
 module CASA
   module Receiver
-    module AdjInTransform
-      class Strategy
+    module Strategy
+      class AdjInTransform
 
         def self.factory attributes
-          CASA::Receiver::AdjInTransform::Strategy.new attributes
+          CASA::Receiver::Strategy::AdjInTransform.new attributes
         end
 
         attr_reader :attributes

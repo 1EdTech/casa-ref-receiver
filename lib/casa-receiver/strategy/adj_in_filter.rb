@@ -1,10 +1,10 @@
 module CASA
   module Receiver
-    module AdjInFilter
-      class Strategy
+    module Strategy
+      class AdjInFilter
 
         def self.factory attributes
-          CASA::Receiver::AdjInFilter::Strategy.new attributes
+          CASA::Receiver::Strategy::AdjInFilter.new attributes
         end
 
         attr_reader :attributes
