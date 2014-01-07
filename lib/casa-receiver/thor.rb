@@ -19,6 +19,20 @@ module CASA
         super args, options, config
       end
 
+      class_option  :settings,
+                    :type => :string,
+                    :default => Pathname.new(__FILE__).parent.parent.parent + 'settings.json',
+                    :desc => 'Path to settings file'
+
+      desc 'reset', 'Reset persistence layer maintained by receiver'
+
+      def reset
+
+        adj_in_store = CASA::Receiver::Strategy::AdjInStore.factory strategy_options['persistence']
+        adj_in_store.reset! if adj_in_store
+
+      end
+
       desc 'get SERVER_URL', 'Issue a query against a CASA Publisher'
 
       method_option :secret,
@@ -31,11 +45,10 @@ module CASA
                     :default => 'json',
                     :desc => 'Output format'
 
-
-      method_option :settings,
-                    :type => :string,
-                    :default => Pathname.new(__FILE__).parent.parent.parent + 'settings.json',
-                    :desc => 'Path to settings file'
+      method_option :store,
+                    :type => :boolean,
+                    :default => false,
+                    :desc => 'Store result in persistence'
 
       def get server_url
 
@@ -77,7 +90,11 @@ module CASA
         end
 
         def strategy_options
-          JSON.parse(File.read options['settings']).merge options.to_hash
+          unless @strategy_options
+            @strategy_options = JSON.parse(File.read options['settings']).merge options.to_hash
+            @strategy_options['persistence'] = false unless options['store']
+          end
+          @strategy_options
         end
 
       end

@@ -26,8 +26,34 @@ For example, if a publisher resides at `http://example.com` (publishing payloads
 bundle exec bin/receiver get http://example.com
 ```
 
-This operation supports the options `secret` for client secret, `output` for format of output, and `settings` for the path to the settings file. For a full description of these options and their allowed values, see:
+If the publisher were to require a secret:
 
 ```
+bundle exec bin/receiver get http://example.com --secret=qwerty1
+```
+
+The `--output` option may be used to specify `yaml` or `none`:
+
+```
+bundle exec bin/receiver get http://example.com --output=yaml
+```
+
+The `--store` option should be used if one wishes to write the result to persistence:
+
+```
+bundle exec bin/receiver get http://example.com --store --output=none
+```
+
+When using `--store`, you can empty your existing persistence with:
+
+```
+bundle exec bin/receiver reset
+```
+
+Full documentation may be found via `help` and `help COMMAND`:
+
+```
+bundle exec bin/receiver help
 bundle exec bin/receiver help get
+bundle exec bin/receiver help reset
 ```

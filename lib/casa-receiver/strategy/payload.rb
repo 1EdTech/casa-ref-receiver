@@ -15,6 +15,7 @@ module CASA
         attr_reader :adj_in_squash_strategy
         attr_reader :adj_in_filter_strategy
         attr_reader :adj_in_transform_strategy
+        attr_reader :adj_in_store
 
         def initialize options
 
@@ -24,6 +25,7 @@ module CASA
           @adj_in_squash_strategy = CASA::Receiver::Strategy::AdjInSquash.factory @attributes
           @adj_in_filter_strategy = CASA::Receiver::Strategy::AdjInFilter.factory @attributes
           @adj_in_transform_strategy = CASA::Receiver::Strategy::AdjInTransform.factory @attributes
+          @adj_in_store = CASA::Receiver::Strategy::AdjInStore.factory @options['persistence']
 
         end
 
@@ -40,6 +42,7 @@ module CASA
           adj_in_squash_strategy.execute! payload_hash
           return false unless adj_in_filter_strategy.allows? payload_hash
           adj_in_transform_strategy.execute! payload_hash
+          adj_in_store.create payload_hash if @adj_in_store
           payload_hash
 
         end

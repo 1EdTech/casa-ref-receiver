@@ -1,5 +1,11 @@
 {
-  "storage": false,
+  "persistence": {
+    "require": "casa-receiver/persistence/filesystem",
+    "class": "CASA::Receiver::Persistence::Filesystem",
+    "options": {
+      "directory": "data"
+    }
+  },
   "attributes":[
     {
       "name":"title",

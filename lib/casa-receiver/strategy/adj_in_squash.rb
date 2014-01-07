@@ -16,8 +16,8 @@ module CASA
         def execute! payload_hash
 
           payload_hash['attributes'] = {
-            'originator_id' => payload_hash['identity']['originator_id'],
-            'timestamp' => 'TIMESTAMP',
+            'uri' => payload_hash['original']['uri'],
+            'timestamp' => payload_hash['original']['timestamp'],
             'share' => payload_hash['original']['share'],
             'propagate' => payload_hash['original']['propagate'],
             'use' => {},
