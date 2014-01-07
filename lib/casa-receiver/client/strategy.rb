@@ -18,17 +18,21 @@ module CASA
           @client.use_secret options['secret'] if options.has_key? 'secret'
           @payload_strategy = CASA::Receiver::Payload::Strategy.new options
 
-          @raw_payloads = nil
-          @processed_payloads = nil
+          reset!
 
         end
 
         def raw_payloads
-          CASA::Receiver::ReceiveIn::PayloadFactory.from_response @client.get_payloads
+          @raw_payloads ||= CASA::Receiver::ReceiveIn::PayloadFactory.from_response @client.get_payloads
         end
 
         def processed_payloads
-          raw_payloads.map { |payload| @payload_strategy.process payload }
+          @processed_payloads ||= raw_payloads.map { |payload| @payload_strategy.process payload }
+        end
+
+        def reset!
+          @raw_payloads = nil
+          @processed_payloads = nil
         end
 
       end
