@@ -1,6 +1,8 @@
 require 'casa-attribute/loader'
 require 'casa-receiver/adj_in_translate/strategy'
 require 'casa-receiver/adj_in_squash/strategy'
+require 'casa-receiver/adj_in_filter/strategy'
+require 'casa-receiver/adj_in_transform/strategy'
 
 module CASA
   module Receiver
@@ -10,6 +12,8 @@ module CASA
         attr_reader :attributes
         attr_reader :adj_in_translate_strategy
         attr_reader :adj_in_squash_strategy
+        attr_reader :adj_in_filter_strategy
+        attr_reader :adj_in_transform_strategy
 
         def initialize options
 
@@ -17,6 +21,8 @@ module CASA
           @attributes = load_attributes! @options['attributes']
           @adj_in_translate_strategy = CASA::Receiver::AdjInTranslate::Strategy.factory @attributes
           @adj_in_squash_strategy = CASA::Receiver::AdjInSquash::Strategy.factory @attributes
+          @adj_in_filter_strategy = CASA::Receiver::AdjInFilter::Strategy.factory @attributes
+          @adj_in_transform_strategy = CASA::Receiver::AdjInTransform::Strategy.factory @attributes
 
         end
 
@@ -30,27 +36,11 @@ module CASA
         def process payload
 
           payload_hash = adj_in_translate_strategy.execute payload
-          @adj_in_squash_strategy.execute! payload_hash
-          return false unless filter_payload_attributes payload_hash
-          transform_payload_attributes payload_hash
+          adj_in_squash_strategy.execute! payload_hash
+          return false unless adj_in_filter_strategy.allows? payload_hash
+          adj_in_transform_strategy.execute! payload_hash
           payload_hash
 
-        end
-
-        private
-
-        def filter_payload_attributes payload_hash
-          passes = true
-          @attributes.each do |attribute_name, attribute|
-            passes = passes and attribute.filter payload_hash
-          end
-          passes
-        end
-
-        def transform_payload_attributes payload_hash
-          @attributes.each do |attribute_name, attribute|
-            payload_hash['attributes'][attribute.section][attribute_name] = attribute.transform payload_hash
-          end
         end
 
       end

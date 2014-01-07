@@ -1,5 +1,3 @@
-require 'casa-operation/translate'
-
 module CASA
   module Receiver
     module AdjInSquash
