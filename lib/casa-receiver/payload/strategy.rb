@@ -2,8 +2,8 @@ require 'casa-attribute/loader'
 
 module CASA
   module Receiver
-    module Strategy
-      class Payload
+    module Payload
+      class Strategy
 
         attr_reader :attributes
         attr_reader :adj_in_translate_strategy

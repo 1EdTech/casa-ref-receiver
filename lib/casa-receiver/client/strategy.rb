@@ -1,10 +1,10 @@
 require 'casa-receiver/receive_in/client'
-require 'casa-receiver/strategy/payload'
+require 'casa-receiver/payload/strategy'
 
 module CASA
   module Receiver
-    module Strategy
-      class Client
+    module Client
+      class Strategy
 
         attr_reader :server_url
         attr_reader :options
@@ -16,7 +16,7 @@ module CASA
 
           @client = CASA::Receiver::ReceiveIn::Client.new server_url
           @client.use_secret options['secret'] if options.has_key? 'secret'
-          @payload_strategy = CASA::Receiver::Strategy::Payload.new options
+          @payload_strategy = CASA::Receiver::Payload::Strategy.new options
 
           @raw_payloads = nil
           @processed_payloads = nil

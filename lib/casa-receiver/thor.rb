@@ -4,7 +4,7 @@ require 'pathname'
 require 'casa-attribute/loader_attribute_error'
 require 'casa-attribute/loader_class_error'
 require 'casa-attribute/loader_file_error'
-require 'casa-receiver/strategy/client'
+require 'casa-receiver/client/strategy'
 require 'casa-receiver/receive_in/body_parser_error'
 require 'casa-receiver/receive_in/body_structure_error'
 require 'casa-receiver/receive_in/request_error'
@@ -26,7 +26,7 @@ module CASA
       def query server_url
 
         begin
-          strategy = CASA::Receiver::Strategy::Client.new server_url, strategy_options
+          strategy = CASA::Receiver::Client::Strategy.new server_url, strategy_options
           puts strategy.processed_payloads.to_json
         rescue CASA::Attribute::LoaderAttributeError
           say_fail "All attributes must define name and class\nPlease resolve issues in attribute configuration"
