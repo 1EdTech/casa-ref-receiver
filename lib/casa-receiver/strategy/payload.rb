@@ -9,6 +9,7 @@ module CASA
     module Strategy
       class Payload
 
+        attr_reader :options
         attr_reader :attributes
         attr_reader :adj_in_translate_strategy
         attr_reader :adj_in_squash_strategy
@@ -18,7 +19,7 @@ module CASA
         def initialize options
 
           @options = options
-          @attributes = load_attributes! @options['attributes']
+          @attributes = build_attribute_handlers @options['attributes']
           @adj_in_translate_strategy = CASA::Receiver::Strategy::AdjInTranslate.factory @attributes
           @adj_in_squash_strategy = CASA::Receiver::Strategy::AdjInSquash.factory @attributes
           @adj_in_filter_strategy = CASA::Receiver::Strategy::AdjInFilter.factory @attributes
@@ -26,7 +27,7 @@ module CASA
 
         end
 
-        def load_attributes! attributes
+        def build_attribute_handlers attributes
 
           attributes.each { |attribute| CASA::Attribute::Loader.load! attribute }
           CASA::Attribute::Loader.loaded
