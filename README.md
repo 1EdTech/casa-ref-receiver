@@ -26,7 +26,7 @@ For example, if a publisher resides at `http://example.com` (publishing payloads
 bundle exec bin/receiver get http://example.com
 ```
 
-This operation supports the options `secret` for client secret and `output` for format of output. For a full description of these options and their allowed values, see:
+This operation supports the options `secret` for client secret, `output` for format of output, and `settings` for the path to the settings file. For a full description of these options and their allowed values, see:
 
 ```
 bundle exec bin/receiver help get

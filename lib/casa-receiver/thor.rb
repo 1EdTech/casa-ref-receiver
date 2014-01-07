@@ -17,22 +17,25 @@ module CASA
 
       def initialize args = [], options = {}, config = {}
         super args, options, config
-        @base_path = Pathname.new(__FILE__).parent.parent.parent
       end
 
       desc 'get SERVER_URL', 'Issue a query against a CASA Publisher'
 
       method_option :secret,
-                    :aliases => '-s',
                     :type => :string,
                     :desc => 'Secret to send with GET /payloads request'
 
       method_option :output,
-                    :aliases => '-o',
                     :type => :string,
                     :enum => ['json','yaml','none'],
                     :default => 'json',
                     :desc => 'Output format'
+
+
+      method_option :settings,
+                    :type => :string,
+                    :default => Pathname.new(__FILE__).parent.parent.parent + 'settings.json',
+                    :desc => 'Path to settings file'
 
       def get server_url
 
@@ -74,9 +77,7 @@ module CASA
         end
 
         def strategy_options
-          options.to_hash.merge({
-              'attributes' => JSON.parse(File.read @base_path + 'attributes.json')
-          })
+          JSON.parse(File.read options['settings']).merge options.to_hash
         end
 
       end
