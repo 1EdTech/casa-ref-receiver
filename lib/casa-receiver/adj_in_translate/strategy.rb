@@ -5,6 +5,16 @@ module CASA
     module AdjInTranslate
       class Strategy < CASA::Operation::Translate::Strategy
 
+        def self.factory attributes
+
+          adj_in_translate_strategy = CASA::Receiver::AdjInTranslate::Strategy.new
+          attributes.each do |attribute_name, attribute|
+            adj_in_translate_strategy.map attribute.uuid => attribute_name
+          end
+          adj_in_translate_strategy
+
+        end
+
         def execute payload
 
           payload_hash = payload.to_hash
