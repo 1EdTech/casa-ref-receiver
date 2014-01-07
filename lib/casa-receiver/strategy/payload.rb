@@ -1,6 +1,4 @@
 require 'casa-attribute/loader'
-require 'casa-attribute/loader_file_error'
-require 'casa-attribute/loader_class_error'
 
 module CASA
   module Receiver
@@ -18,16 +16,7 @@ module CASA
 
         def initialize_attributes! attributes
 
-          begin
-            attributes.each { |attribute| CASA::Attribute::Loader.load! attribute }
-          rescue CASA::Attribute::LoaderAttributeError
-            abort "All attributes must define name and class\nPlease resolve issues in attribute configuration"
-          rescue CASA::Attribute::LoaderFileError => e
-            abort "Attribute class '#{e.class_name}' requires the load path `#{e.require_path}`\nPlease add a gem to `Gemfile` that defines this load path"
-          rescue CASA::Attribute::LoaderClassError => e
-            abort "Load path '#{e.require_path}' does not define expected class `#{e.class_name}`\nPlease resolve this error by fixing the class to load path mapping"
-          end
-
+          attributes.each { |attribute| CASA::Attribute::Loader.load! attribute }
           @attributes = CASA::Attribute::Loader.loaded
 
         end
@@ -50,7 +39,6 @@ module CASA
           @attributes.each do |attribute_name, attribute|
             adj_in_translate_strategy.map attribute.uuid => attribute_name
           end
-
           adj_in_translate_strategy.execute payload
 
         end
