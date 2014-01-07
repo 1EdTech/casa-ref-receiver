@@ -19,11 +19,11 @@ module CASA
         @base_path = Pathname.new(__FILE__).parent.parent.parent
       end
 
-      desc 'query SERVER_URL', 'Issue a query against a CASA Publisher'
+      desc 'get SERVER_URL', 'Issue a query against a CASA Publisher'
 
-      method_option :secret, :aliases => '-s', :desc => 'Secret to send with GET /payloads request'
+      method_option :secret, :type => 'string', :aliases => '-s', :desc => 'Secret to send with GET /payloads request'
 
-      def query server_url
+      def get server_url
 
         begin
           strategy = CASA::Receiver::Client::Strategy.new server_url, strategy_options
