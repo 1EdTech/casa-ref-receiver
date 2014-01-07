@@ -1,4 +1,6 @@
 require 'casa-attribute/loader'
+require 'casa-receiver/adj_in_translate/strategy'
+require 'casa-receiver/adj_in_squash/strategy'
 
 module CASA
   module Receiver
@@ -7,12 +9,14 @@ module CASA
 
         attr_reader :attributes
         attr_reader :adj_in_translate_strategy
+        attr_reader :adj_in_squash_strategy
 
         def initialize options
 
           @options = options
           @attributes = load_attributes! @options['attributes']
           @adj_in_translate_strategy = CASA::Receiver::AdjInTranslate::Strategy.factory @attributes
+          @adj_in_squash_strategy = CASA::Receiver::AdjInSquash::Strategy.factory @attributes
 
         end
 
@@ -26,7 +30,7 @@ module CASA
         def process payload
 
           payload_hash = adj_in_translate_strategy.execute payload
-          squash_payload_attributes payload_hash
+          @adj_in_squash_strategy.execute! payload_hash
           return false unless filter_payload_attributes payload_hash
           transform_payload_attributes payload_hash
           payload_hash
@@ -34,20 +38,6 @@ module CASA
         end
 
         private
-
-        def squash_payload_attributes payload_hash
-          payload_hash['attributes'] = {
-            'originator_id' => payload_hash['identity']['originator_id'],
-            'timestamp' => 'TIMESTAMP',
-            'share' => payload_hash['original']['share'],
-            'propagate' => payload_hash['original']['propagate'],
-            'use' => {},
-            'require' => {}
-          }
-          @attributes.each do |attribute_name, attribute|
-            payload_hash['attributes'][attribute.section][attribute_name] = attribute.squash payload_hash
-          end
-        end
 
         def filter_payload_attributes payload_hash
           passes = true
