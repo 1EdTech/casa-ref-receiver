@@ -3,6 +3,7 @@ require 'casa-receiver/strategy/adj_in_translate'
 require 'casa-receiver/strategy/adj_in_squash'
 require 'casa-receiver/strategy/adj_in_filter'
 require 'casa-receiver/strategy/adj_in_transform'
+require 'casa-receiver/strategy/adj_in_store'
 
 module CASA
   module Receiver

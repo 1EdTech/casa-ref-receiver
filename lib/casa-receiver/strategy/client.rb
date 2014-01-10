@@ -1,4 +1,5 @@
 require 'casa-receiver/receive_in/client'
+require 'casa-receiver/receive_in/payload_factory'
 require 'casa-receiver/strategy/payload'
 
 module CASA
