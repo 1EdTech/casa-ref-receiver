@@ -1,13 +1,16 @@
+require 'logger'
 require 'casa-attribute/loader'
 require 'casa-receiver/strategy/adj_in_translate'
 require 'casa-receiver/strategy/adj_in_squash'
 require 'casa-receiver/strategy/adj_in_filter'
 require 'casa-receiver/strategy/adj_in_transform'
 require 'casa-receiver/strategy/adj_in_store'
+require 'casa-receiver/support/scoped_logger'
 
 module CASA
   module Receiver
     module Strategy
+
       class Payload
 
         attr_reader :options
@@ -28,6 +31,11 @@ module CASA
           @adj_in_transform_strategy = CASA::Receiver::Strategy::AdjInTransform.factory @attributes
           @adj_in_store = CASA::Receiver::Strategy::AdjInStore.factory @options['persistence']
 
+          @logger = CASA::Receiver::Support::ScopedLogger.new(
+            @options.has_key?('logger') ? @options['logger'] : ::Logger.new('/dev/null'),
+            @options.has_key?('client') ? @options['client'] : nil
+          )
+
         end
 
         def build_attribute_handlers attributes
@@ -39,12 +47,31 @@ module CASA
 
         def process payload
 
-          payload_hash = adj_in_translate_strategy.execute payload
-          adj_in_squash_strategy.execute! payload_hash
-          return false unless adj_in_filter_strategy.allows? payload_hash
-          adj_in_transform_strategy.execute! payload_hash
-          adj_in_store.create payload_hash if @adj_in_store
-          payload_hash
+          @logger.block "#{payload['identity']['id']}@#{payload['identity']['originator_id']}" do |log|
+
+            log.debug "Traslating payload"
+            payload_hash = adj_in_translate_strategy.execute payload
+
+            log.debug "Squashing payload"
+            adj_in_squash_strategy.execute! payload_hash
+
+            log.debug "Filtering payload"
+            unless adj_in_filter_strategy.allows? payload_hash
+              log.info "Dropped payload because failed filter"
+              return false
+            end
+
+            log.debug "Transforming payload"
+            adj_in_transform_strategy.execute! payload_hash
+
+            if @adj_in_store
+              log.debug "Storing payload"
+              adj_in_store.create payload_hash
+            end
+
+            payload_hash
+
+          end
 
         end
 
