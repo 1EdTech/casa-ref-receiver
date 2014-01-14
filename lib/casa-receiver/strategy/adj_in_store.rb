@@ -11,10 +11,12 @@ module CASA
 
         def initialize options
           @options = options
-          if @options['class'] and @options['require']
+          if @options.has_key?('class') and @options.has_key?('require')
             require @options['require']
             class_object = @options['class'].split('::').inject(Object){|o,c| o.const_get c}
             @handler = class_object.new @options['options']
+          elsif @options.has_key?('handler')
+            @handler = @options['handler']
           end
         end
 
