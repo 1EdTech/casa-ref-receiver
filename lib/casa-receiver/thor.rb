@@ -68,7 +68,9 @@ module CASA
         rescue CASA::Receiver::ReceiveIn::RequestError => e
           say_fail e.message
         rescue CASA::Receiver::ReceiveIn::ResponseError => e
-          say_fail "Server responded with error #{e.http_code}"
+          say_fail "Peer responded with error: #{e.http_code}"
+        rescue StandardError => e
+          say_fail "Error encountered:  #{e}"
         end
 
       end
