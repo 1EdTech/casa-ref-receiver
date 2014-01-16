@@ -21,6 +21,8 @@ module CASA
 
           @payload_strategy = CASA::Receiver::Strategy::Payload.new options.merge({'client'=>server_url})
 
+          @options['logger'].debug("Test") { "This is a test"}
+
           @logger = CASA::Support::ScopedLogger.new(
             server_url,
             @options.has_key?('logger') ? @options['logger'] : '/dev/null'
@@ -32,7 +34,7 @@ module CASA
 
         def execute!
           payloads = raw_payloads
-          @logger.info "Processing payloads received from client"
+          @logger.info { "Processing payloads received from client" }
           @processed_payloads = payloads.map(){ |payload|
             @payload_strategy.process payload
           }.select(){ |payload|
@@ -41,7 +43,7 @@ module CASA
         end
 
         def raw_payloads
-          @logger.info "Querying client for payloads"
+          @logger.info { "Querying client for payloads" }
           @raw_payloads ||= CASA::Receiver::ReceiveIn::PayloadFactory.from_response @client.get_payloads
         end
 

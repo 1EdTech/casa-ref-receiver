@@ -49,15 +49,27 @@ module CASA
 
           @logger.scoped_block "#{payload['identity']['id']}@#{payload['identity']['originator_id']}" do |log|
 
-            log.debug "Traslating payload"
-            payload_hash = adj_in_translate_strategy.execute payload
+            payload_hash = nil
 
-            log.debug "Squashing payload"
-            adj_in_squash_strategy.execute! payload_hash
+            log.debug do
+              payload_hash = adj_in_translate_strategy.execute payload
+              "Translated payload"
+            end
 
-            log.debug "Filtering payload"
-            unless adj_in_filter_strategy.allows? payload_hash
-              log.info "Dropped payload because failed filter"
+            log.debug do
+              adj_in_squash_strategy.execute! payload_hash
+              "Squashed payload"
+            end
+
+            allowed = true
+
+            log.debug do
+              allowed = adj_in_filter_strategy.allows? payload_hash
+              "Filtered payload"
+            end
+
+            unless allowed
+              log.info { "Dropped payload because filter failed" }
               return false
             end
 
@@ -66,9 +78,13 @@ module CASA
             #adj_in_transform_strategy.execute! payload_hash
 
             if @adj_in_store
-              log.debug "Storing payload"
-              adj_in_store.create payload_hash
+              log.debug do
+                adj_in_store.create payload_hash
+                "Storing payload"
+              end
             end
+
+            puts payload_hash
 
             payload_hash
 
