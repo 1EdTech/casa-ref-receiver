@@ -1,11 +1,11 @@
 require 'logger'
-require 'casa-attribute/loader'
-require 'casa-receiver/strategy/adj_in_translate'
-require 'casa-receiver/strategy/adj_in_squash'
-require 'casa-receiver/strategy/adj_in_filter'
-require 'casa-receiver/strategy/adj_in_transform'
-require 'casa-receiver/strategy/adj_in_store'
-require 'casa-receiver/support/scoped_logger'
+require 'casa/attribute/loader'
+require 'casa/receiver/strategy/adj_in_translate'
+require 'casa/receiver/strategy/adj_in_squash'
+require 'casa/receiver/strategy/adj_in_filter'
+require 'casa/receiver/strategy/adj_in_transform'
+require 'casa/receiver/strategy/adj_in_store'
+require 'casa/support/scoped_logger'
 
 module CASA
   module Receiver
@@ -31,9 +31,9 @@ module CASA
           @adj_in_transform_strategy = CASA::Receiver::Strategy::AdjInTransform.factory @attributes
           @adj_in_store = CASA::Receiver::Strategy::AdjInStore.factory @options['persistence']
 
-          @logger = CASA::Receiver::Support::ScopedLogger.new(
-            @options.has_key?('logger') ? @options['logger'] : ::Logger.new('/dev/null'),
-            @options.has_key?('client') ? @options['client'] : nil
+          @logger = CASA::Support::ScopedLogger.new(
+            @options.has_key?('client') ? @options['client'] : nil,
+            @options.has_key?('logger') ? @options['logger'] : '/dev/null'
           )
 
         end
@@ -47,7 +47,7 @@ module CASA
 
         def process payload
 
-          @logger.block "#{payload['identity']['id']}@#{payload['identity']['originator_id']}" do |log|
+          @logger.scoped_block "#{payload['identity']['id']}@#{payload['identity']['originator_id']}" do |log|
 
             log.debug "Traslating payload"
             payload_hash = adj_in_translate_strategy.execute payload
@@ -61,8 +61,9 @@ module CASA
               return false
             end
 
-            log.debug "Transforming payload"
-            adj_in_transform_strategy.execute! payload_hash
+            # TODO: Move to Relay / Local Module
+            #log.debug "Transforming payload"
+            #adj_in_transform_strategy.execute! payload_hash
 
             if @adj_in_store
               log.debug "Storing payload"

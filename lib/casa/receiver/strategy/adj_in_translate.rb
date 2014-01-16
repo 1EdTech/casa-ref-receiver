@@ -1,4 +1,4 @@
-require 'casa-operation/translate'
+require 'casa/operation/translate/strategy'
 
 module CASA
   module Receiver

@@ -1,6 +1,6 @@
-require 'casa-payload/transit_payload'
-require 'casa-receiver/receive_in/body_structure_error'
-require 'casa-receiver/receive_in/body_parser_error'
+require 'casa/payload/transit_payload'
+require 'casa/receiver/receive_in/body_structure_error'
+require 'casa/receiver/receive_in/body_parser_error'
 require 'json'
 
 module CASA

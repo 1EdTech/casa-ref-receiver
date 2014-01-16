@@ -1,4 +1,4 @@
 #!/usr/bin/env ruby
 
-require 'casa-receiver'
+require 'casa/receiver'
 CASA::Receiver::Thor.start

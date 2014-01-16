@@ -2,14 +2,14 @@ require 'thor'
 require 'yaml'
 require 'json'
 require 'pathname'
-require 'casa-attribute/loader_attribute_error'
-require 'casa-attribute/loader_class_error'
-require 'casa-attribute/loader_file_error'
-require 'casa-receiver/strategy/client'
-require 'casa-receiver/receive_in/body_parser_error'
-require 'casa-receiver/receive_in/body_structure_error'
-require 'casa-receiver/receive_in/request_error'
-require 'casa-receiver/receive_in/response_error'
+require 'casa/attribute/loader_attribute_error'
+require 'casa/attribute/loader_class_error'
+require 'casa/attribute/loader_file_error'
+require 'casa/receiver/strategy/client'
+require 'casa/receiver/receive_in/body_parser_error'
+require 'casa/receiver/receive_in/body_structure_error'
+require 'casa/receiver/receive_in/request_error'
+require 'casa/receiver/receive_in/response_error'
 
 module CASA
   module Receiver
@@ -21,7 +21,7 @@ module CASA
 
       class_option  :settings,
                     :type => :string,
-                    :default => Pathname.new(__FILE__).parent.parent.parent + 'settings.json',
+                    :default => Pathname.new(__FILE__).parent.parent.parent.parent + 'settings.json',
                     :desc => 'Path to settings file'
 
       desc 'reset', 'Reset persistence layer maintained by receiver'
@@ -70,6 +70,7 @@ module CASA
         rescue CASA::Receiver::ReceiveIn::ResponseError => e
           say_fail "Peer responded with error: #{e.http_code}"
         rescue StandardError => e
+          raise e
           say_fail "Error encountered:  #{e}"
         end
 

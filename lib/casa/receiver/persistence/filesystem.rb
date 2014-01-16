@@ -1,6 +1,6 @@
 require 'fileutils'
 require 'json'
-require 'casa-payload/local_payload'
+require 'casa/payload/local_payload'
 
 module CASA
   module Receiver
@@ -11,7 +11,7 @@ module CASA
 
         def initialize options = nil
           @options = options
-          @base_dir = Pathname.new(__FILE__).parent.parent.parent.parent + (options.has_key?('directory') ? options['directory'] : 'data')
+          @base_dir = Pathname.new(__FILE__).parent.parent.parent.parent.parent + (options.has_key?('directory') ? options['directory'] : 'data')
           FileUtils.mkdir_p @base_dir
         end
 

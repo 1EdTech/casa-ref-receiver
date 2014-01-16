@@ -1,7 +1,7 @@
 require 'rest_client'
-require 'casa-receiver/receive_in/request_error'
-require 'casa-receiver/receive_in/response_error'
-require 'casa-receiver/receive_in/request'
+require 'casa/receiver/receive_in/request_error'
+require 'casa/receiver/receive_in/response_error'
+require 'casa/receiver/receive_in/request'
 
 module CASA
   module Receiver

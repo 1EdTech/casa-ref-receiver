@@ -1,7 +1,7 @@
-require 'casa-receiver/receive_in/client'
-require 'casa-receiver/receive_in/payload_factory'
-require 'casa-receiver/strategy/payload'
-require 'casa-receiver/support/scoped_logger'
+require 'casa/receiver/receive_in/client'
+require 'casa/receiver/receive_in/payload_factory'
+require 'casa/receiver/strategy/payload'
+require 'casa/support/scoped_logger'
 
 module CASA
   module Receiver
@@ -21,9 +21,9 @@ module CASA
 
           @payload_strategy = CASA::Receiver::Strategy::Payload.new options.merge({'client'=>server_url})
 
-          @logger = CASA::Receiver::Support::ScopedLogger.new(
-            @options.has_key?('logger') ? @options['logger'] : ::Logger.new('/dev/null'),
-            server_url
+          @logger = CASA::Support::ScopedLogger.new(
+            server_url,
+            @options.has_key?('logger') ? @options['logger'] : '/dev/null'
           )
 
           reset!
@@ -31,7 +31,13 @@ module CASA
         end
 
         def execute!
-          @processed_payloads = raw_payloads.map { |payload| @payload_strategy.process payload }
+          payloads = raw_payloads
+          @logger.info "Processing payloads received from client"
+          @processed_payloads = payloads.map(){ |payload|
+            @payload_strategy.process payload
+          }.select(){ |payload|
+            payload
+          }
         end
 
         def raw_payloads

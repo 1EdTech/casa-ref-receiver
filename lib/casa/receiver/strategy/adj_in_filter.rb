@@ -15,11 +15,16 @@ module CASA
 
         def allows? payload_hash
 
-          passes = true
+          allows = true
           @attributes.each do |attribute_name, attribute|
-            passes = passes and attribute.filter payload_hash
+            if attribute.respond_to? :filter
+              unless attribute.filter payload_hash
+                allows = false
+                break
+              end
+            end
           end
-          passes
+          allows
 
         end
 
