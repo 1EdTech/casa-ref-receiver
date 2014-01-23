@@ -21,8 +21,6 @@ module CASA
 
           @payload_strategy = CASA::Receiver::Strategy::Payload.new options.merge({'client'=>server_url})
 
-          @options['logger'].debug("Test") { "This is a test"}
-
           @logger = CASA::Support::ScopedLogger.new(
             server_url,
             @options.has_key?('logger') ? @options['logger'] : '/dev/null'

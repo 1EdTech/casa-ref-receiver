@@ -84,8 +84,6 @@ module CASA
               end
             end
 
-            puts payload_hash
-
             payload_hash
 
           end
