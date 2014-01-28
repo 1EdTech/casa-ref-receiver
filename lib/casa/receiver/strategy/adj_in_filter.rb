@@ -18,7 +18,7 @@ module CASA
           allows = true
           @attributes.each do |attribute_name, attribute|
             if attribute.respond_to? :filter
-              unless attribute.filter payload_hash
+              unless attribute.in_filter payload_hash
                 allows = false
                 break
               end

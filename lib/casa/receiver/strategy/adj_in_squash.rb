@@ -25,7 +25,7 @@ module CASA
           }
 
           @attributes.each do |attribute_name, attribute|
-            payload_hash['attributes'][attribute.section][attribute_name] = attribute.squash payload_hash
+            payload_hash['attributes'][attribute.section][attribute_name] = attribute.in_squash payload_hash
           end
 
           payload_hash

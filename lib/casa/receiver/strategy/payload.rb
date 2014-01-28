@@ -3,7 +3,6 @@ require 'casa/attribute/loader'
 require 'casa/receiver/strategy/adj_in_translate'
 require 'casa/receiver/strategy/adj_in_squash'
 require 'casa/receiver/strategy/adj_in_filter'
-require 'casa/receiver/strategy/adj_in_transform'
 require 'casa/receiver/strategy/adj_in_store'
 require 'casa/support/scoped_logger'
 
@@ -18,7 +17,6 @@ module CASA
         attr_reader :adj_in_translate_strategy
         attr_reader :adj_in_squash_strategy
         attr_reader :adj_in_filter_strategy
-        attr_reader :adj_in_transform_strategy
         attr_reader :adj_in_store
 
         def initialize options
@@ -28,7 +26,6 @@ module CASA
           @adj_in_translate_strategy = CASA::Receiver::Strategy::AdjInTranslate.factory @attributes
           @adj_in_squash_strategy = CASA::Receiver::Strategy::AdjInSquash.factory @attributes
           @adj_in_filter_strategy = CASA::Receiver::Strategy::AdjInFilter.factory @attributes
-          @adj_in_transform_strategy = CASA::Receiver::Strategy::AdjInTransform.factory @attributes
           @adj_in_store = CASA::Receiver::Strategy::AdjInStore.factory @options['persistence']
 
           @logger = CASA::Support::ScopedLogger.new(
@@ -72,10 +69,6 @@ module CASA
               log.info { "Dropped payload because filter failed" }
               return false
             end
-
-            # TODO: Move to Relay / Local Module
-            #log.debug "Transforming payload"
-            #adj_in_transform_strategy.execute! payload_hash
 
             if @adj_in_store
               log.debug do
