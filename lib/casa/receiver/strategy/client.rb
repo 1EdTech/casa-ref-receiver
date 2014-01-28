@@ -2,6 +2,7 @@ require 'casa/receiver/receive_in/client'
 require 'casa/receiver/receive_in/payload_factory'
 require 'casa/receiver/strategy/payload'
 require 'casa/support/scoped_logger'
+require 'casa/attribute/loader'
 
 module CASA
   module Receiver
@@ -18,6 +19,10 @@ module CASA
 
           @client = CASA::Receiver::ReceiveIn::Client.new server_url
           @client.use_secret options['secret'] if options.has_key? 'secret'
+
+          if options.has_key? 'attributes'
+            options['attributes'].each { |attribute| CASA::Attribute::Loader.load! attribute }
+          end
 
           @payload_strategy = CASA::Receiver::Strategy::Payload.new options.merge({'client'=>server_url})
 

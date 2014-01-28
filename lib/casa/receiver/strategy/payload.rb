@@ -1,5 +1,4 @@
 require 'logger'
-require 'casa/attribute/loader'
 require 'casa/receiver/strategy/adj_in_translate'
 require 'casa/receiver/strategy/adj_in_squash'
 require 'casa/receiver/strategy/adj_in_filter'
@@ -22,7 +21,7 @@ module CASA
         def initialize options
 
           @options = options
-          @attributes = build_attribute_handlers @options['attributes']
+          @attributes = CASA::Attribute::Loader.loaded
           @adj_in_translate_strategy = CASA::Receiver::Strategy::AdjInTranslate.factory @attributes
           @adj_in_squash_strategy = CASA::Receiver::Strategy::AdjInSquash.factory @attributes
           @adj_in_filter_strategy = CASA::Receiver::Strategy::AdjInFilter.factory @attributes
@@ -32,13 +31,6 @@ module CASA
             @options.has_key?('client') ? @options['client'] : nil,
             @options.has_key?('logger') ? @options['logger'] : '/dev/null'
           )
-
-        end
-
-        def build_attribute_handlers attributes
-
-          attributes.each { |attribute| CASA::Attribute::Loader.load! attribute }
-          CASA::Attribute::Loader.loaded
 
         end
 
