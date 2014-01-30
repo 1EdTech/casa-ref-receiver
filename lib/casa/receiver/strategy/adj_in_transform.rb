@@ -1,24 +1,11 @@
+require 'casa/receiver/strategy/base_transform'
+
 module CASA
   module Receiver
     module Strategy
-      class AdjInTransform
+      class AdjInTransform < BaseTransform
 
-        def self.factory attributes
-          CASA::Receiver::Strategy::AdjInTransform.new attributes
-        end
-
-        attr_reader :attributes
-
-        def initialize attributes
-          @attributes = attributes
-        end
-
-        def execute! payload_hash
-          @attributes.each do |attribute_name, attribute|
-            payload_hash['attributes'][attribute.section][attribute_name] = attribute.in_transform payload_hash
-          end
-          payload_hash
-        end
+        attribute_method :in_transform
 
       end
     end
