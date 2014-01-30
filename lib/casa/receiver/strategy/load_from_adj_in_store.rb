@@ -14,8 +14,6 @@ module CASA
           @to_handler = options['persistence']['to']['handler']
           @transform_strategy = options['transform']['handler']
 
-          puts options['transform']['handler']
-
           @logger = options.has_key?('logger') ? options['logger'] : CASA::Support::ScopedLogger.new(null, '/dev/null')
 
         end

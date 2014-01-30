@@ -1,32 +1,11 @@
+require 'casa/receiver/strategy/base_filter'
+
 module CASA
   module Receiver
     module Strategy
-      class AdjInFilter
+      class AdjInFilter < BaseFilter
 
-        def self.factory attributes
-          CASA::Receiver::Strategy::AdjInFilter.new attributes
-        end
-
-        attr_reader :attributes
-
-        def initialize attributes
-          @attributes = attributes
-        end
-
-        def allows? payload_hash
-
-          allows = true
-          @attributes.each do |attribute_name, attribute|
-            if attribute.respond_to? :in_filter
-              unless attribute.in_filter payload_hash
-                allows = false
-                break
-              end
-            end
-          end
-          allows
-
-        end
+        attribute_method :in_filter
 
       end
     end

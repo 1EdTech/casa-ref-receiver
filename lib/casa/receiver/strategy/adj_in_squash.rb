@@ -1,17 +1,11 @@
+require 'casa/receiver/strategy/base_with_attributes'
+
 module CASA
   module Receiver
     module Strategy
-      class AdjInSquash
+      class AdjInSquash < BaseWithAttributes
 
-        def self.factory attributes
-          CASA::Receiver::Strategy::AdjInSquash.new attributes
-        end
-
-        attr_reader :attributes
-
-        def initialize attributes
-          @attributes = attributes
-        end
+        attribute_method :in_squash
 
         def execute! payload_hash
 
@@ -24,11 +18,7 @@ module CASA
             'require' => {}
           }
 
-          @attributes.each do |attribute_name, attribute|
-            payload_hash['attributes'][attribute.section][attribute_name] = attribute.in_squash payload_hash
-          end
-
-          payload_hash
+          execute_attribute_method_over_attributes! payload_hash, 'attributes'
 
         end
 
