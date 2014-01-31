@@ -4,7 +4,7 @@ module CASA
       class AdjInStore
 
         def self.factory options = false
-          options ? CASA::Receiver::Strategy::AdjInStore.new(options) : nil
+          options ? self.new(options) : nil
         end
 
         attr_reader :options
