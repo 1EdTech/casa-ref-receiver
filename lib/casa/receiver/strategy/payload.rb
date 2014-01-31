@@ -1,7 +1,7 @@
 require 'logger'
-require 'casa/receiver/strategy/adj_in_translate'
-require 'casa/receiver/strategy/adj_in_squash'
-require 'casa/receiver/strategy/adj_in_filter'
+require 'casa/operation/translate/adj_in'
+require 'casa/operation/squash/adj_in'
+require 'casa/operation/filter/adj_in'
 require 'casa/receiver/strategy/adj_in_store'
 require 'casa/support/scoped_logger'
 
@@ -22,9 +22,11 @@ module CASA
 
           @options = options
           @attributes = CASA::Attribute::Loader.loaded
-          @adj_in_translate_strategy = CASA::Receiver::Strategy::AdjInTranslate.factory @attributes
-          @adj_in_squash_strategy = CASA::Receiver::Strategy::AdjInSquash.factory @attributes
-          @adj_in_filter_strategy = CASA::Receiver::Strategy::AdjInFilter.factory @attributes
+
+          @adj_in_translate_strategy = CASA::Operation::Translate::AdjIn.factory @attributes
+          @adj_in_squash_strategy = CASA::Operation::Squash::AdjIn.factory @attributes
+          @adj_in_filter_strategy = CASA::Operation::Filter::AdjIn.factory @attributes
+
           @adj_in_store = CASA::Receiver::Strategy::AdjInStore.factory @options['persistence']
 
           @logger = CASA::Support::ScopedLogger.new(

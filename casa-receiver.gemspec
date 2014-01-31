@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'casa-payload'
   s.add_dependency 'casa-attribute'
   s.add_dependency 'casa-support'
-  s.add_dependency 'casa-operation-translate'
+  s.add_dependency 'casa-operation'
 
   s.add_development_dependency 'rake'
 
