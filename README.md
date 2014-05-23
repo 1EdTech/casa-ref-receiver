@@ -1,6 +1,19 @@
 # CASA Receiver Module
 
-[![Build Status](https://travis-ci.org/AppSharing/casa-receiver.png)](https://travis-ci.org/AppSharing/casa-receiver) [![Dependency Status](https://gemnasium.com/AppSharing/casa-receiver.png)](https://gemnasium.com/AppSharing/casa-receiver) [![Code Climate](https://codeclimate.com/github/AppSharing/casa-receiver.png)](https://codeclimate.com/github/AppSharing/casa-receiver)
+The [Community App Sharing Architecture (CASA)](http://imsglobal.github.io/casa) provides a mechanism for
+discovering and sharing metadata about web resources such as websites, mobile
+apps and LTI tools. It models real-world decision-making through extensible
+attributes, filter and transform operations, flexible peering relationships,
+etc.
+
+This Ruby gem is part of the CASA reference implementation. It provides an
+implementation of the CASA Receiver Module as a command-line tool; further,
+it can be hooked into a larger environment such as the [CASA engine](https://github.com/IMSGlobal/casa-engine).
+
+## License
+
+This software is **open-source** and licensed under the Apache 2 license.
+The full text of the license may be found in the `LICENSE` file.
 
 ## Setup
 
